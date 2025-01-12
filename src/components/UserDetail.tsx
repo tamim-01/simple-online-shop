@@ -1,13 +1,13 @@
 import  { useContext, useMemo , useCallback} from "react";
 import Modal from "./Ui/Modal.tsx";
-import UserProgressContext from "../store/userDetailContext.tsx";
+import UserDetailsContext from "../store/userDetailContext.tsx";
 import { FaUserCircle, FaTimes } from "react-icons/fa";
 import React from "react";
 
 const UserDetailModal = React.memo(() => {
   console.log("UserDetailModal rendered");
 
-  const userCtx = useContext(UserProgressContext);
+  const userCtx = useContext(UserDetailsContext);
   const userData = userCtx.userData;
 
   const handleCloseCart = useCallback(()=>{ userCtx.hideUser()} , [userCtx]) 

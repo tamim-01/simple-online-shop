@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from "react";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
-import UserProgressContext from "../store/userDetailContext.tsx";
+import UserDetailsContext from "../store/userDetailContext.tsx";
 
 const Header: React.FC = () => {
-  const userCtx = useContext(UserProgressContext);
+  const userCtx = useContext(UserDetailsContext);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -28,11 +28,11 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className="w-full flex flex-row justify-between items-center p-4 sm:p-6 sm:px-12 md:px-24 bg-white shadow-md">
+    <nav className="w-full flex flex-row justify-between items-center py-2 sm:py-2 sm:px-12 md:px-24 bg-white shadow-md  ">
     
       <button
         onClick={handleShowUser}
-        className="flex w-[130px]  sm:w-[200px] items-center space-x-2 sm:space-x-4 hover:shadow-lg rounded-full p-2 sm:px-4 transition-shadow duration-300"
+        className="flex w-[130px]  sm:w-[200px] items-center space-x-2 sm:space-x-4 hover:shadow-lg rounded-full p-2  transition-shadow duration-300"
       >
         <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
           <FaUserCircle className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
       </button>
 
      
-      <div className="w-24 sm:w-44">
+      <div className="w-24 sm:w-40">
         <img src="/image/logo.png" alt="Logo" className="w-full h-auto" />
       </div>
 
