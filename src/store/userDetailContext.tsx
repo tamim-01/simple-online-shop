@@ -31,7 +31,7 @@ interface UserData {
 }
 
 //context type
-type UserProgressContextType = {
+type UserDetailsContextType = {
   showUserDetails: boolean;
   userData: UserData | null; 
   showUser: () => void;
@@ -41,7 +41,7 @@ type UserProgressContextType = {
 };
 
 // Create the context
-const UserProgressContext = createContext<UserProgressContextType>({
+const UserDetailsContext = createContext<UserDetailsContextType>({
   showUserDetails: false,
   userData: null,
   showUser: () => {},
@@ -50,7 +50,7 @@ const UserProgressContext = createContext<UserProgressContextType>({
 });
 
 //provider
-export function UserProgressContextProvider({ children }) {
+export function UserDetailsContextProvider({ children }) {
   const [showUserDetails, setShowUserDetails] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null); 
 
@@ -69,7 +69,7 @@ export function UserProgressContextProvider({ children }) {
   
 
   
-  const UserProgressCtx = useMemo(
+  const UserDetailsCtx = useMemo(
     () => ({
       showUserDetails,
       userData,
@@ -82,10 +82,10 @@ export function UserProgressContextProvider({ children }) {
   );
 
   return (
-    <UserProgressContext.Provider value={UserProgressCtx}>
+    <UserDetailsContext.Provider value={UserDetailsCtx}>
       {children}
-    </UserProgressContext.Provider>
+    </UserDetailsContext.Provider>
   );
 }
 
-export default UserProgressContext;
+export default UserDetailsContext;
