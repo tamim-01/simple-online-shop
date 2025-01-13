@@ -13,8 +13,8 @@ interface Product {
 }
 
 export default function ShowingCartsPage() {
-  const [items, setItems] = useState<Product[]>([]); // Initialize as empty array
-  const [displayedItems, setDisplayedItems] = useState<Product[]>([]); // Initialize as empty array
+  const [items, setItems] = useState<Product[]>([]);
+  const [displayedItems, setDisplayedItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
@@ -29,9 +29,9 @@ export default function ShowingCartsPage() {
           throw new Error("Failed to fetch data");
         }
         const data: Product[] = await response.json();
-        setItems(data); // Directly set items and displayedItems
+        setItems(data);
         setDisplayedItems(data);
-        cartCtx.setItems(data); // Update context if needed
+        cartCtx.setItems(data);
       } catch (error) {
         console.error("Failed to fetch:", error);
         setError("Failed to fetch data. Please try again later.");
@@ -41,8 +41,7 @@ export default function ShowingCartsPage() {
     }
 
     fetchProducts();
-  }, [cartCtx]); // Ensure cartCtx is stable or use specific properties
-
+  }, [cartCtx]);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.trim().toLowerCase();
     setSearchValue(query);
@@ -58,7 +57,7 @@ export default function ShowingCartsPage() {
   };
 
   const filterItems = (query: string, category: string) => {
-    let filteredItems = items; // items is always an array, so no need for null checks
+    let filteredItems = items;
 
     if (query) {
       filteredItems = filteredItems.filter(
