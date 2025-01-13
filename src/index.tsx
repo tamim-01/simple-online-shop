@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./components/Pages/NotFoundPage.tsx";
 import Layout from "./components/Layout.tsx";
 import { CartContextProvider } from "./store/cartStore.tsx";
+import ProductListPage from "./components/Pages/ShopingCartPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <ShowingCartsPage />,
       },
-      {},
+      {
+        path: "/shoppingCart",
+        element: <ProductListPage />,
+      },
     ],
   },
 ]);

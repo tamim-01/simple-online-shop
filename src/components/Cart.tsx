@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-// Define the type for the product data
 interface Product {
   id: number;
   title: string;
@@ -17,9 +16,8 @@ interface CartItemProps {
 
 const CartItem: React.FC<CartItemProps> = ({ product, onAddToCart }) => {
   const { title, price, category, description, image } = product;
-  const [isVisible, setIsVisible] = useState(false); // State to control animation
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Trigger the fade-in animation after the component mounts
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -30,7 +28,6 @@ const CartItem: React.FC<CartItemProps> = ({ product, onAddToCart }) => {
         isVisible ? "opacity-100 transition-opacity duration-700" : "opacity-0"
       }`}
     >
-      {/* Product Image Container */}
       <div className="w-full h-48 flex items-center justify-center overflow-hidden">
         <img
           src={image}
@@ -39,7 +36,6 @@ const CartItem: React.FC<CartItemProps> = ({ product, onAddToCart }) => {
         />
       </div>
 
-      {/* Product Details */}
       <div className="p-4 flex flex-col flex-grow">
         <h2 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-2">
           {title}
@@ -50,7 +46,6 @@ const CartItem: React.FC<CartItemProps> = ({ product, onAddToCart }) => {
         </p>
         <p className="text-lg font-bold text-gray-900 mb-4">${price}</p>
 
-        {/* Add to Cart Button */}
         <button
           onClick={() => onAddToCart(product)}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import UserDetailsContext from "../store/userDetailContext.tsx";
 import CartContext from "../store/cartStore.tsx";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const userCtx = useContext(UserDetailsContext);
@@ -47,18 +48,22 @@ const Header: React.FC = () => {
           {userCtx.userData ? userCtx.userData.username : "User name"}
         </h1>
       </button>
+      <Link to={"/"}>
+        <div className="w-24 sm:w-40">
+          <img src="/image/logo.png" alt="Logo" className="w-full h-auto" />
+        </div>
+      </Link>
 
-      <div className="w-24 sm:w-40">
-        <img src="/image/logo.png" alt="Logo" className="w-full h-auto" />
-      </div>
-
-      <button className="flex w-[130px] sm:w-[200px] justify-between items-center space-x-2 sm:space-x-4 hover:shadow-lg rounded-full px-4 py-2 sm:px-6 sm:py-4 transition-shadow duration-300">
+      <Link
+        to={"/ShopingCart"}
+        className="flex w-[130px] sm:w-[200px] justify-between items-center space-x-2 sm:space-x-4 hover:shadow-lg rounded-full px-4 py-2 sm:px-6 sm:py-4 transition-shadow duration-300"
+      >
         <FaShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
         <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Cart</h1>
-        <span className="rounded-full w-6 bg-slate-800 text-white">
+        <span className="rounded-full w-6 bg-slate-800 text-white flex flex-col justify-center items-center">
           {totalCartItems || 0}
         </span>
-      </button>
+      </Link>
     </nav>
   );
 };
