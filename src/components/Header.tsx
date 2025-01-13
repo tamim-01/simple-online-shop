@@ -55,7 +55,7 @@ const Header: React.FC = () => {
       </Link>
 
       <Link
-        to={"/ShopingCart"}
+        to={"/ShoppingCart"}
         className="flex w-[130px] sm:w-[200px] justify-between items-center space-x-2 sm:space-x-4 hover:shadow-lg rounded-full px-4 py-2 sm:px-6 sm:py-4 transition-shadow duration-300"
       >
         <FaShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />

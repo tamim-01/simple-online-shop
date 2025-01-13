@@ -18,10 +18,10 @@ type CartContextType = {
   storedItems: Product[] | null;
   setItems: (data: Product[]) => void;
   addedToCartItems: AddedToCartProduct[] | null;
-  setAddedToCartItem: (data: AddedToCartProduct[]) => void;
   addToCart: (pId: number) => void;
   increase: (id: number) => void;
   decrease: (id: number) => void;
+  removeFromCart: (id: number) => void;
 };
 
 // Create the context
@@ -29,10 +29,10 @@ const CartContext = createContext<CartContextType>({
   storedItems: null,
   setItems: () => {},
   addedToCartItems: null,
-  setAddedToCartItem: () => {},
   addToCart: () => {},
   increase: () => {},
   decrease: () => {},
+  removeFromCart: () => {},
 });
 
 // Provider component
@@ -70,39 +70,58 @@ export function CartContextProvider({
     [storedItems]
   );
 
-  const increase = useCallback((pId: number) => {}, []);
+  const increase = useCallback((pId: number) => {
+    setAddedToCartItems((prev) => {
+      if (!prev) return null;
 
-  const decrease = useCallback((pId: number) => {}, []);
+      return prev.map((item) =>
+        item.id === pId ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    });
+  }, []);
+
+  const decrease = useCallback((pId: number) => {
+    setAddedToCartItems((prev) => {
+      if (!prev) return null;
+
+      return prev
+        .map((item) =>
+          item.id === pId ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0);
+    });
+  }, []);
+
+  const removeFromCart = useCallback((pId: number) => {
+    setAddedToCartItems((prev) => {
+      if (!prev) return null;
+
+      return prev.filter((item) => item.id !== pId);
+    });
+  }, []);
 
   const handleStoreItems = useCallback((data: Product[]) => {
     setStoredItems(data);
   }, []);
-
-  const handleSetAddedToCartItems = useCallback(
-    (data: AddedToCartProduct[]) => {
-      setAddedToCartItems(data);
-    },
-    []
-  );
 
   const CartCtx = useMemo(
     () => ({
       storedItems,
       setItems: handleStoreItems,
       addedToCartItems,
-      setAddedToCartItem: handleSetAddedToCartItems,
       addToCart,
       increase,
       decrease,
+      removeFromCart,
     }),
     [
       storedItems,
       addedToCartItems,
       handleStoreItems,
-      handleSetAddedToCartItems,
       addToCart,
       increase,
       decrease,
+      removeFromCart,
     ]
   );
 
