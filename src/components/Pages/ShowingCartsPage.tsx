@@ -39,8 +39,14 @@ export default function ShowingCartsPage() {
         setLoading(false);
       }
     }
-
-    fetchProducts();
+    if (!cartCtx.storedItems) {
+      fetchProducts();
+    } else {
+      setLoading(false);
+      setItems(cartCtx.storedItems);
+      setDisplayedItems(cartCtx.storedItems);
+      cartCtx.setItems(cartCtx.storedItems);
+    }
   }, [cartCtx]);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.trim().toLowerCase();

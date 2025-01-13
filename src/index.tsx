@@ -7,7 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./components/Pages/NotFoundPage.tsx";
 import Layout from "./components/Layout.tsx";
 import { CartContextProvider } from "./store/cartStore.tsx";
-import ProductListPage from "./components/Pages/ShopingCartPage.tsx";
+import ProductListPage from "./components/Pages/ShoppingCartPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,11 +30,9 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <CartContextProvider>
-      <UserDetailsContextProvider>
-        <RouterProvider router={router} />
-      </UserDetailsContextProvider>
-    </CartContextProvider>
-  </React.StrictMode>
+  <CartContextProvider>
+    <UserDetailsContextProvider>
+      <RouterProvider router={router} />
+    </UserDetailsContextProvider>
+  </CartContextProvider>
 );
