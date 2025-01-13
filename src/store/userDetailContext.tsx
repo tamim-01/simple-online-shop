@@ -33,11 +33,10 @@ interface UserData {
 //context type
 type UserDetailsContextType = {
   showUserDetails: boolean;
-  userData: UserData | null; 
+  userData: UserData | null;
   showUser: () => void;
   hideUser: () => void;
-  setUserData: (data: UserData) => void; 
-
+  setUserData: (data: UserData) => void;
 };
 
 // Create the context
@@ -46,13 +45,13 @@ const UserDetailsContext = createContext<UserDetailsContextType>({
   userData: null,
   showUser: () => {},
   hideUser: () => {},
-  setUserData: () => {}
+  setUserData: () => {},
 });
 
 //provider
 export function UserDetailsContextProvider({ children }) {
   const [showUserDetails, setShowUserDetails] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null); 
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const showUser = useCallback(() => {
     setShowUserDetails(true);
@@ -66,9 +65,6 @@ export function UserDetailsContextProvider({ children }) {
     setUserData(data);
   }, []);
 
-  
-
-  
   const UserDetailsCtx = useMemo(
     () => ({
       showUserDetails,
@@ -76,7 +72,6 @@ export function UserDetailsContextProvider({ children }) {
       showUser,
       hideUser,
       setUserData: handleSetUserData,
-     
     }),
     [showUserDetails, userData, showUser, hideUser, handleSetUserData]
   );
