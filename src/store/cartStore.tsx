@@ -1,132 +1,159 @@
 import React, { createContext, useCallback, useMemo, useState } from "react";
 
-interface Product {
+export interface Product {
   id: number;
   title: string;
   price: string;
   category: string;
   description: string;
   image: string;
-}
-
-interface AddedToCartProduct {
-  id: number;
   quantity: number;
 }
 
-type CartContextType = {
-  storedItems: Product[] | null;
-  setItems: (data: Product[]) => void;
-  addedToCartItems: AddedToCartProduct[] | null;
-  addToCart: (pId: number) => void;
-  increase: (id: number) => void;
-  decrease: (id: number) => void;
-  removeFromCart: (id: number) => void;
+interface CartState {
+  products: Product[];
+  cartItems: Product[];
+}
+
+interface CartContextType {
+  products: Product[];
+  cartItems: Product[];
+  totalItems: number;
+  setProducts: (products: Product[]) => void;
+  addToCart: (productId: number, quantity?: number) => void;
+  decreaseQuantity: (productId: number) => void;
+  removeFromCart: (productId: number) => void;
+}
+
+const INITIAL_STATE: CartState = {
+  products: [],
+  cartItems: [],
 };
 
-// Create the context
 const CartContext = createContext<CartContextType>({
-  storedItems: null,
-  setItems: () => {},
-  addedToCartItems: null,
+  products: [],
+  cartItems: [],
+  totalItems: 0,
+  setProducts: () => {},
   addToCart: () => {},
-  increase: () => {},
-  decrease: () => {},
+  decreaseQuantity: () => {},
   removeFromCart: () => {},
 });
 
-// Provider component
 export function CartContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [storedItems, setStoredItems] = useState<Product[] | null>(null);
-  const [addedToCartItems, setAddedToCartItems] = useState<
-    AddedToCartProduct[] | null
-  >(null);
+  const [state, setState] = useState<CartState>(INITIAL_STATE);
 
   const addToCart = useCallback(
-    (pId: number) => {
-      if (!storedItems) return;
-
-      const product = storedItems.find((item) => item.id === pId);
+    (productId: number, quantity = 1) => {
+      const product = state.products.find((p) => p.id === productId);
       if (!product) return;
 
-      setAddedToCartItems((prev) => {
-        const existingItem = prev?.find((item) => item.id === pId);
+      setState((prev) => {
+        const newCartItems = [...prev.cartItems];
+        const existingIndex = newCartItems.findIndex(
+          (item) => item.id === productId
+        );
 
-        if (existingItem) {
-          return (
-            prev?.map((item) =>
-              item.id === pId ? { ...item, quantity: item.quantity + 1 } : item
-            ) || []
-          );
+        if (existingIndex === -1) {
+          newCartItems.push({ ...product, quantity });
         } else {
-          return [...(prev || []), { id: pId, quantity: 1 }];
+          newCartItems[existingIndex] = {
+            ...newCartItems[existingIndex],
+            quantity: (newCartItems[existingIndex].quantity || 0) + quantity,
+          };
         }
+
+        return {
+          ...prev,
+          cartItems: newCartItems,
+        };
       });
     },
-    [storedItems]
+    [state.products]
   );
 
-  const increase = useCallback((pId: number) => {
-    setAddedToCartItems((prev) => {
-      if (!prev) return null;
-
-      return prev.map((item) =>
-        item.id === pId ? { ...item, quantity: item.quantity + 1 } : item
+  const decreaseQuantity = useCallback((productId: number) => {
+    setState((prev) => {
+      const newCartItems = [...prev.cartItems];
+      const existingIndex = newCartItems.findIndex(
+        (item) => item.id === productId
       );
+
+      if (existingIndex === -1) return prev;
+
+      const currentQuantity = newCartItems[existingIndex].quantity || 0;
+      if (currentQuantity <= 1) {
+        newCartItems.splice(existingIndex, 1);
+      } else {
+        newCartItems[existingIndex] = {
+          ...newCartItems[existingIndex],
+          quantity: currentQuantity - 1,
+        };
+      }
+
+      return {
+        ...prev,
+        cartItems: newCartItems,
+      };
     });
   }, []);
 
-  const decrease = useCallback((pId: number) => {
-    setAddedToCartItems((prev) => {
-      if (!prev) return null;
+  const removeFromCart = useCallback((productId: number) => {
+    setState((prev) => {
+      const existingIndex = prev.cartItems.findIndex(
+        (item) => item.id === productId
+      );
+      if (existingIndex === -1) return prev;
 
-      return prev
-        .map((item) =>
-          item.id === pId ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0);
+      const newCartItems = [...prev.cartItems];
+      newCartItems.splice(existingIndex, 1);
+
+      return {
+        ...prev,
+        cartItems: newCartItems,
+      };
     });
   }, []);
 
-  const removeFromCart = useCallback((pId: number) => {
-    setAddedToCartItems((prev) => {
-      if (!prev) return null;
-
-      return prev.filter((item) => item.id !== pId);
-    });
+  const setProducts = useCallback((products: Product[]) => {
+    setState((prev) => ({
+      ...prev,
+      products,
+    }));
   }, []);
 
-  const handleStoreItems = useCallback((data: Product[]) => {
-    setStoredItems(data);
-  }, []);
+  const totalItems = useMemo(
+    () => state.cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0),
+    [state.cartItems]
+  );
 
-  const CartCtx = useMemo(
+  const contextValue = useMemo(
     () => ({
-      storedItems,
-      setItems: handleStoreItems,
-      addedToCartItems,
+      products: state.products,
+      cartItems: state.cartItems,
+      totalItems,
+      setProducts,
       addToCart,
-      increase,
-      decrease,
+      decreaseQuantity,
       removeFromCart,
     }),
     [
-      storedItems,
-      addedToCartItems,
-      handleStoreItems,
+      state.products,
+      state.cartItems,
+      totalItems,
+      setProducts,
       addToCart,
-      increase,
-      decrease,
+      decreaseQuantity,
       removeFromCart,
     ]
   );
 
   return (
-    <CartContext.Provider value={CartCtx}>{children}</CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
   );
 }
 

@@ -1,107 +1,24 @@
 import React, { useContext } from "react";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
-import CartContext from "../store/cartStore.tsx";
-
-interface FullProduct {
-  id: number;
-  title: string;
-  price: string;
-  category: string;
-  description: string;
-  image: string;
-  quantity: number;
-}
-
+import CartContext, { Product } from "../store/cartStore.tsx";
 interface ProductItemProps {
-  product: FullProduct;
-  isMobile: boolean;
+  product: Product;
   index: number;
 }
 
-const ProductItem: React.FC<ProductItemProps> = ({
-  product,
-  isMobile,
-  index,
-}) => {
+const ProductItem: React.FC<ProductItemProps> = ({ product, index }) => {
   const cartCtx = useContext(CartContext);
-
-  function handleIncrease(id: number) {
-    cartCtx.increase(id);
-  }
-
-  function handleDecrease(id: number) {
-    cartCtx.decrease(id);
-  }
-  function handleRemove(id: number) {
-    cartCtx.removeFromCart(id);
-  }
-
   const totalPrice = parseFloat(product.price) * product.quantity;
-
-  if (isMobile) {
-    return (
-      <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-2">
-          <span>Number:</span>
-          <span>{index + 1}</span>
-        </div>
-        <div className="flex justify-between items-center mb-2">
-          <span>Title:</span>
-          <span>
-            {product.title.length > 20
-              ? `${product.title.substring(0, 20)}...`
-              : product.title}
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-2">
-          <span>Description:</span>
-          <span>
-            {product.description.length > 30
-              ? `${product.description.substring(0, 30)}...`
-              : product.description}
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-2">
-          <span>Quantity:</span>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handleDecrease(product.id)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <FaMinus />
-            </button>
-            <span>{product.quantity}</span>
-            <button
-              onClick={() => handleIncrease(product.id)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <FaPlus />
-            </button>
-          </div>
-        </div>
-        <div className="flex justify-between items-center mb-2">
-          <span>Price:</span>
-          <span>${product.price}</span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span>Total Price:</span>
-          <span>${totalPrice.toFixed(2)}</span>
-        </div>
-        <button
-          onClick={() => handleRemove(product.id)}
-          className="mt-2 text-red-500 hover:text-red-700"
-        >
-          <FaTrash />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <tr className="hover:bg-gray-50">
       <td className="py-2 px-4 border-b">{index + 1}</td>
-      <td className="py-2 px-4 border-b">{product.title}</td>
-      <td className="py-2 px-4 border-b">
+      <td className="py-2 px-4 border-b ">
+        {product.title.length > 25
+          ? `${product.title.substring(0, 25)}...`
+          : product.description}
+      </td>
+      <td className="py-2 px-4 border-b text-[12px] md:text-sm">
         {product.description.length > 50
           ? `${product.description.substring(0, 50)}...`
           : product.description}
@@ -109,14 +26,14 @@ const ProductItem: React.FC<ProductItemProps> = ({
       <td className="py-2 px-4 border-b">
         <div className="flex items-center space-x-2">
           <button
-            onClick={() => handleDecrease(product.id)}
+            onClick={() => cartCtx.decreaseQuantity(product.id)}
             className="text-gray-500 hover:text-gray-700"
           >
             <FaMinus />
           </button>
           <span>{product.quantity}</span>
           <button
-            onClick={() => handleIncrease(product.id)}
+            onClick={() => cartCtx.addToCart(product.id)}
             className="text-gray-500 hover:text-gray-700"
           >
             <FaPlus />
@@ -127,7 +44,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       <td className="py-2 px-4 border-b">${totalPrice.toFixed(2)}</td>
       <td className="py-2 px-4 border-b">
         <button
-          onClick={() => handleRemove(product.id)}
+          onClick={() => cartCtx.removeFromCart(product.id)}
           className="text-red-500 hover:text-red-700"
         >
           <FaTrash />
