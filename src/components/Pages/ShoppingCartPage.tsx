@@ -1,50 +1,26 @@
 import React, { useContext } from "react";
 import ProductItem from "../ProductItem.tsx";
-import CartContext from "../../store/cartStore.tsx";
 import { Link } from "react-router-dom";
+import CartContext from "../../store/cartStore.tsx";
 
-interface FullProduct {
-  id: number;
-  title: string;
-  price: string;
-  category: string;
-  description: string;
-  image: string;
-  quantity: number;
-}
+const ProductListPage = () => {
+  const { cartItems, products } = useContext(CartContext);
 
-const ProductListPage: React.FC = () => {
-  const cartCtx = useContext(CartContext);
-  const productIds = cartCtx.addedToCartItems;
+  const totalPrice = cartItems.reduce((total, item) => {
+    const product = products.find((p) => p.id === item.id);
+    if (!product) return total;
+    return total + parseFloat(product.price) * (item.quantity || 0);
+  }, 0);
 
-  const fullProducts: FullProduct[] | undefined = productIds
-    ?.map((item2) => {
-      const fullItem = cartCtx.storedItems?.find(
-        (item) => item.id === item2.id
-      );
-      if (!fullItem) return null;
-
-      return {
-        ...fullItem,
-        quantity: item2.quantity,
-      };
-    })
-    .filter(Boolean) as FullProduct[];
-
-  const totalPrice =
-    fullProducts?.reduce(
-      (total, product) => total + parseFloat(product.price) * product.quantity,
-      0
-    ) || 0;
-
-  if (!fullProducts || fullProducts.length === 0) {
+  if (cartItems.length === 0) {
     return (
-      <div className="container mt-12  mx-auto p-4 max-w-[992px] flex flex-col justify-center items-center">
+      <div className="container mt-12 mx-auto p-4 max-w-[992px] flex flex-col justify-center items-center">
         <h1 className="text-2xl font-bold mb-4">Your Cart is Empty</h1>
-        <Link to={"/"}>
-          <h2 className="text-xl font-medium mb-4 underline hover:text-blue-600">
-            back to shop
-          </h2>
+        <Link
+          to="/"
+          className="text-xl font-medium mb-4 underline hover:text-blue-600"
+        >
+          Back to shop
         </Link>
       </div>
     );
@@ -54,18 +30,7 @@ const ProductListPage: React.FC = () => {
     <div className="container mx-auto p-4 max-w-[992px]">
       <h1 className="text-xl font-bold mb-4">Your Cart</h1>
 
-      <div className="block md:hidden">
-        {fullProducts.map((product, index) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            isMobile={true}
-            index={index}
-          />
-        ))}
-      </div>
-
-      <div className="hidden md:block overflow-x-auto">
+      <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
@@ -74,21 +39,19 @@ const ProductListPage: React.FC = () => {
               <th className="py-2 px-4 border-b">Description</th>
               <th className="py-2 px-4 border-b">Quantity</th>
               <th className="py-2 px-4 border-b">Price</th>
-              <th className="py-2 px-4 border-b">Total Price</th>
+              <th className="py-2 px-4 border-b text-nowrap">Total Price</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {fullProducts.map((product, index) => (
-              <ProductItem
-                key={product.id}
-                product={product}
-                isMobile={false}
-                index={index}
-              />
-            ))}
+            {cartItems.map((item, index) => {
+              const product = products.find((p) => p.id === item.id);
+              if (!product) return null;
+
+              return <ProductItem key={item.id} product={item} index={index} />;
+            })}
           </tbody>
-          <tfoot>
+          <tfoot className="hidden md:table-footer-group">
             <tr>
               <td
                 colSpan={6}

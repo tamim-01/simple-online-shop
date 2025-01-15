@@ -29,11 +29,7 @@ const Header: React.FC = () => {
     userCtx.showUser();
   }
 
-  const totalCartItems = cartCtx.addedToCartItems?.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
-
+  const totalCartItems = cartCtx.totalItems;
   return (
     <nav className="w-full flex flex-row justify-between items-center py-2 sm:py-2 sm:px-12 md:px-24 bg-white shadow-md">
       <button
